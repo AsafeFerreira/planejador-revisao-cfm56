@@ -29,7 +29,9 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+/* Tamanho base das letras acompanha a largura da tela: 15px no celular, até 20px em
+   monitores grandes. Como o resto usa rem, o layout inteiro cresce junto. */
+html { scroll-behavior: smooth; font-size: clamp(15px, 0.35vw + 11px, 20px); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 /* Itens de grid não encolhem abaixo do conteúdo (gráficos, tabelas) sem isto: a página
    ficava mais larga que a tela do celular. "clip" corta sem criar barra de rolagem. */
 .hero > *, .motor-explica > *, .folga-grid > *, .relogios > *, .simulador > *, .resultados > *,
@@ -41,7 +43,7 @@ body {
     linear-gradient(rgba(11, 24, 38, .035) 1px, transparent 1px) 0 0 / 28px 28px,
     linear-gradient(90deg, rgba(11, 24, 38, .035) 1px, transparent 1px) 0 0 / 28px 28px,
     var(--papel);
-  font: 16px/1.6 var(--fonte); -webkit-font-smoothing: antialiased;
+  font: 1rem/1.6 var(--fonte); -webkit-font-smoothing: antialiased;
 }
 h1, h2, h3 { font-family: var(--fonte-titulo); line-height: 1.15; margin: 0; letter-spacing: -.01em; }
 h3 { font-size: 1.1rem; margin-bottom: .35rem; }
@@ -62,7 +64,7 @@ small { color: var(--texto-2); font-weight: 400; }
   overflow: hidden;
 }
 .nav {
-  max-width: 1200px; margin: 0 auto; padding: 18px 24px;
+  max-width: 76rem; margin: 0 auto; padding: 18px 24px;
   display: flex; justify-content: space-between; align-items: center; gap: 16px;
 }
 .marca { font-family: var(--fonte-titulo); font-weight: 700; text-decoration: none; font-size: 1.05rem; }
@@ -72,7 +74,7 @@ small { color: var(--texto-2); font-weight: 400; }
 .nav-links a:hover { color: #fff; }
 
 .hero {
-  max-width: 1200px; margin: 0 auto; padding: 40px 24px 56px;
+  max-width: 76rem; margin: 0 auto; padding: 40px 24px 56px;
   display: grid; grid-template-columns: 1fr 1.25fr; gap: 24px; align-items: center;
 }
 .selo {
@@ -141,8 +143,8 @@ small { color: var(--texto-2); font-weight: 400; }
 .marcador { outline: none; }
 
 /* ---------------------------------------------------------------- seções */
-.secao { max-width: 1200px; margin: 0 auto; padding: 88px 24px; }
-.secao-alt, .secao-escura { max-width: none; padding-left: max(24px, calc((100% - 1152px) / 2)); padding-right: max(24px, calc((100% - 1152px) / 2)); }
+.secao { max-width: 76rem; margin: 0 auto; padding: 5.5rem 24px; }
+.secao-alt, .secao-escura { max-width: none; padding-left: max(24px, calc((100% - 73rem) / 2)); padding-right: max(24px, calc((100% - 73rem) / 2)); }
 .secao-alt {
   background:
     linear-gradient(rgba(11, 24, 38, .04) 1px, transparent 1px) 0 0 / 28px 28px,
@@ -246,7 +248,7 @@ input[type="range"]:hover::-webkit-slider-thumb, input[type="range"]:focus-visib
 .barras-llp b { grid-row: 1 / 3; grid-column: 2; align-self: end; font-family: var(--fonte-titulo); }
 
 /* capítulo 4: simulador */
-.simulador { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
+.simulador { display: grid; grid-template-columns: 19rem 1fr; gap: 24px; align-items: start; }
 .painel-controles {
   position: sticky; top: 16px; background: var(--tinta-2); border: 1px solid var(--linha-escura);
   border-radius: var(--raio); padding: 8px 20px 20px;
@@ -325,10 +327,10 @@ input[type="range"]:hover::-webkit-slider-thumb, input[type="range"]:focus-visib
   background: var(--tinta); color: var(--texto-claro-2); padding: 40px 24px;
   display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap;
 }
-.rodape > * { max-width: 1152px; }
+.rodape > * { max-width: 73rem; }
 .rodape .marca { color: #fff; margin-bottom: 6px; }
 .rodape p { margin: 0; font-size: .9rem; }
-.rodape { padding-left: max(24px, calc((100% - 1152px) / 2)); padding-right: max(24px, calc((100% - 1152px) / 2)); }
+.rodape { padding-left: max(24px, calc((100% - 73rem) / 2)); padding-right: max(24px, calc((100% - 73rem) / 2)); }
 .tooltip {
   position: fixed; z-index: 50; pointer-events: none; background: #fff; color: var(--texto);
   border-radius: 10px; padding: 10px 12px; font-size: .84rem; box-shadow: 0 10px 30px rgba(0,0,0,.25);
@@ -410,7 +412,7 @@ input[type="range"]:hover::-webkit-slider-thumb, input[type="range"]:focus-visib
 .relogio:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(16, 24, 40, .1); }
 .corrida { margin-top: 24px; }
 .corrida .segmentado { flex: 0 0 auto; min-width: 230px; }
-.corrida-linhas { display: grid; grid-template-columns: 210px 1fr; gap: 14px 18px; align-items: center; margin-top: 22px; }
+.corrida-linhas { display: grid; grid-template-columns: 13rem 1fr; gap: 14px 18px; align-items: center; margin-top: 22px; }
 .corrida-rotulo b { display: block; font-size: .95rem; }
 .corrida-rotulo span { font-size: .78rem; color: var(--texto-2); }
 .corrida-trilho { position: relative; height: 30px; background: var(--papel); border-radius: 8px; }
@@ -426,7 +428,7 @@ input[type="range"]:hover::-webkit-slider-thumb, input[type="range"]:focus-visib
 
 /* ---------------------------------------------------------------- capítulo 5: figura do dilema */
 .dilema { margin-bottom: 24px; }
-.dilema-linhas { display: grid; grid-template-columns: 200px 1fr; gap: 18px 18px; align-items: center; margin-top: 22px; }
+.dilema-linhas { display: grid; grid-template-columns: 12.5rem 1fr; gap: 18px 18px; align-items: center; margin-top: 22px; }
 .dilema-rotulo b { display: block; }
 .dilema-rotulo span { font-size: .8rem; color: var(--texto-2); }
 .dilema-trilho { position: relative; height: 38px; background: var(--papel); border-radius: 10px; }
@@ -467,3 +469,14 @@ input[type="range"]:hover::-webkit-slider-thumb, input[type="range"]:focus-visib
 #folga-mostrador { flex: 1; display: flex; align-items: center; }
 .cabine-curva { margin-top: 0; }
 .corrida-trilho .valor.dentro { transform: translate(calc(-100% - 8px), -50%); }
+.selo-vence { font-style: normal; font-size: .7rem; font-weight: 600; color: #fff; background: var(--critico);
+  padding: 1px 8px; border-radius: 999px; margin-left: 6px; vertical-align: 2px; white-space: nowrap; }
+.cabine-folga { border-radius: 14px; text-wrap: balance; }
+@media (max-width: 560px) {
+  .folga-leitura div:nth-child(3) { grid-column: 1 / -1; }
+  .cabine { padding: 14px 14px 16px; }
+  .cabine-folga { font-size: .82rem; }
+}
+/* texto corrido (não flex): assim a frase quebra como texto normal no celular */
+.cabine-folga { display: block; width: fit-content; max-width: 100%; }
+.cabine-folga .ponto-status { width: 10px; height: 10px; vertical-align: 0; margin-right: 6px; }

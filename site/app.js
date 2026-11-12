@@ -99,10 +99,10 @@ function desenharCorrida(v) {
   const vence = Math.min(...relogios.map((r) => r.ciclos));
   const ESCALA = 32000, pct = (n) => (100 * n) / ESCALA;
   $("#corrida").innerHTML = relogios.map((r) => `
-    <div class="corrida-rotulo"><b>${r.nome}</b><span>${r.sub}</span></div>
+    <div class="corrida-rotulo"><b>${r.nome}${r.ciclos === vence ? ' <em class="selo-vence">zera primeiro</em>' : ""}</b><span>${r.sub}</span></div>
     <div class="corrida-trilho">
       <i class="barra ${r.tipo} ${r.ciclos === vence ? "vence" : ""}" style="width:${pct(r.ciclos)}%"></i>
-      <span class="valor ${pct(r.ciclos) > 78 ? "dentro" : ""}" style="left:${pct(r.ciclos)}%">${num(r.ciclos)}${r.ciclos === vence ? " · zera primeiro" : ""}</span>
+      <span class="valor ${pct(r.ciclos) > 78 ? "dentro" : ""}" style="left:${pct(r.ciclos)}%">${num(r.ciclos)}</span>
       <i class="linha-revisao" style="left:${pct(vence)}%"></i>
     </div>`).join("");
   const quem = relogios.find((r) => r.ciclos === vence);
@@ -127,7 +127,9 @@ document.querySelectorAll('input[type="range"]').forEach((el) => {
 
 // ================================================================ gráficos (Chart.js)
 Chart.defaults.font.family = "Inter, system-ui, sans-serif";
-Chart.defaults.font.size = 12;
+// fonte dos gráficos acompanha o tamanho base da página (que cresce em telas grandes)
+const BASE = parseFloat(getComputedStyle(document.documentElement).fontSize);
+Chart.defaults.font.size = Math.round(BASE * 0.78);
 Chart.defaults.plugins.tooltip.padding = 10;
 Chart.defaults.plugins.tooltip.cornerRadius = 8;
 const eixosEscuros = { ticks: { color: "#a9b6c6" }, grid: { color: "rgba(255,255,255,.07)" }, border: { color: "#24405f" } };
