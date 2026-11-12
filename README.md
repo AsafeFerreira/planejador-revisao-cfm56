@@ -3,6 +3,8 @@
 Projeto de estudo sobre **quando um motor CFM56-7B precisa ir para a oficina (shop visit)**,
 usando apenas dados públicos e um modelo físico do motor em Python.
 
+**🌐 Site interativo:** [asafeferreira.github.io/planejador-revisao-cfm56](https://asafeferreira.github.io/planejador-revisao-cfm56/)
+
 O CFM56-7B equipa o Boeing 737 Next Generation (737-600/700/800/900). A principal medida que as
 companhias aéreas usam para decidir a revisão é a **margem de EGT**: a folga entre a temperatura
 do gás de escape do motor e o limite que ele não pode passar. Com o desgaste, essa folga diminui.
