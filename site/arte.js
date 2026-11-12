@@ -1,4 +1,5 @@
 // Arte do site, desenhada em SVG (vetor): escala sem perder qualidade e não pesa nada.
+import { localidade, tr } from "./i18n.js";
 
 // ------------------------------------------------------------ motor em corte
 // Vista lateral de um turbofan de dois eixos. Desenhamos só a metade de cima e
@@ -56,12 +57,13 @@ export function motorSVG({ marcadores = false, id = "m" } = {}) {
   const marcas = !marcadores ? "" : [
     [1, 137, 30], [2, 285, 98], [3, 365, 108], [4, 455, 92],
   ].map(([n, x, y]) => `
-    <g class="marcador" data-passo="${n}" tabindex="0" role="button" aria-label="Passo ${n}">
+    <g class="marcador" data-passo="${n}" tabindex="0" role="button" aria-label="${tr("Passo", "Step")} ${n}">
       <circle cx="${x}" cy="${y}" r="13"/><text x="${x}" y="${y + 4.5}">${n}</text>
     </g>`).join("");
   return `
   <svg class="motor-svg" viewBox="0 0 760 300" role="img"
-       aria-label="Desenho em corte de um motor turbofan: o ar entra pelo fan à esquerda, a maior parte passa por fora do núcleo, e o restante é comprimido, queimado e expandido nas turbinas.">
+       aria-label="${tr("Desenho em corte de um motor turbofan: o ar entra pelo fan à esquerda, a maior parte passa por fora do núcleo, e o restante é comprimido, queimado e expandido nas turbinas.",
+      "Cutaway drawing of a turbofan engine: air enters through the fan on the left, most of it goes around the core, and the rest is compressed, burned and expanded in the turbines.")}">
     <defs>
       <linearGradient id="gradNucleo-${id}" gradientUnits="userSpaceOnUse" x1="170" x2="660" y1="0" y2="0">
         <stop offset="0" stop-color="#8fbcf2"/><stop offset="0.33" stop-color="#9a86e6"/>
@@ -127,7 +129,7 @@ export function mostradorSVG({ egt, limite, cor }) {
   const [px, py] = polar(CX, CY, R - 30, ang(egt));
   return `
   <svg viewBox="0 0 320 290" class="mostrador" role="img"
-       aria-label="Mostrador de EGT: ${Math.round(egt)} °C, limite ${limite} °C, folga ${Math.round(folga)} °C">
+       aria-label="${tr(`Mostrador de EGT: ${Math.round(egt)} °C, limite ${limite} °C, folga ${Math.round(folga)} °C`, `EGT gauge: ${Math.round(egt)} °C, limit ${limite} °C, margin ${Math.round(folga)} °C`)}">
     <defs>
       <pattern id="hachura" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
         <rect width="6" height="6" fill="rgba(240,122,69,.18)"/><line x1="0" y1="0" x2="0" y2="6" stroke="#f07a45" stroke-width="2.5"/>
@@ -145,7 +147,7 @@ export function mostradorSVG({ egt, limite, cor }) {
     <line x1="${CX}" y1="${CY}" x2="${px}" y2="${py}" class="m-ponteiro"/>
     <circle cx="${CX}" cy="${CY}" r="9" class="m-cubo"/>
     <text x="${CX}" y="${CY + 56}" class="m-leitura">${Math.round(egt)}<tspan class="m-unid" dx="3">°C</tspan></text>
-    <text x="${CX}" y="${CY + 76}" class="m-rotulo">EGT · decolagem em dia quente</text>
+    <text x="${CX}" y="${CY + 76}" class="m-rotulo">${tr("EGT · decolagem em dia quente", "EGT · takeoff on a hot day")}</text>
   </svg>`;
 }
 
@@ -161,17 +163,17 @@ export function curvaFolgaSVG({ folgaEm, ciclos, zeraEm, maxCiclos = 20000 }) {
   const faixa = (de, ate, cls) => `<rect class="${cls}" x="${X0}" y="${y(ate)}" width="${X1 - X0}" height="${y(de) - y(ate)}"/>`;
   const atual = folgaEm(ciclos);
   const eixoX = [0, 5000, 10000, 15000, 20000].map((n) =>
-    `<text class="c-eixo" x="${x(n)}" y="${Y0 + 16}" text-anchor="middle">${n ? `${n / 1000} mil` : "0"}</text>`).join("");
+    `<text class="c-eixo" x="${x(n)}" y="${Y0 + 16}" text-anchor="middle">${n ? tr(`${n / 1000} mil`, `${n / 1000}k`) : "0"}</text>`).join("");
   const eixoY = [0, 30, Math.min(topo, 120)].map((m) =>
     `<text class="c-eixo" x="${X0 - 6}" y="${y(m) + 4}" text-anchor="end">${m}°</text>`).join("");
   return `
-  <svg viewBox="0 0 320 140" class="curva" role="img" aria-label="Folga caindo ao longo dos ciclos; agora: ${Math.round(atual)} °C">
+  <svg viewBox="0 0 320 140" class="curva" role="img" aria-label="${tr(`Folga caindo ao longo dos ciclos; agora: ${Math.round(atual)} °C`, `Margin dropping over the cycles; now: ${Math.round(atual)} °C`)}">
     ${faixa(30, topo, "c-bom")}${faixa(10, 30, "c-atencao")}${faixa(-10, 10, "c-critico")}
     <line class="c-zero" x1="${X0}" x2="${X1}" y1="${y(0)}" y2="${y(0)}"/>
     ${eixoX}${eixoY}
     <polyline class="c-linha" points="${pts.join(" ")}"/>
     ${zeraEm <= maxCiclos ? `<line class="c-fim" x1="${x(zeraEm)}" x2="${x(zeraEm)}" y1="${Y1}" y2="${Y0}"/>
-      <text class="c-fim-txt" x="${x(zeraEm) - 4}" y="${Y1 + 9}" text-anchor="end">acaba aos ${(zeraEm / 1000).toLocaleString("pt-BR", { maximumFractionDigits: 1 })} mil</text>` : ""}
+      <text class="c-fim-txt" x="${x(zeraEm) - 4}" y="${Y1 + 9}" text-anchor="end">${tr("acaba aos", "runs out at")} ${(zeraEm / 1000).toLocaleString(localidade(), { maximumFractionDigits: 1 })}${tr(" mil", "k")}</text>` : ""}
     <line class="c-agora-linha" x1="${x(ciclos)}" x2="${x(ciclos)}" y1="${y(atual)}" y2="${Y0}"/>
     <circle class="c-agora" cx="${x(ciclos)}" cy="${y(atual)}" r="5.5"/>
   </svg>`;

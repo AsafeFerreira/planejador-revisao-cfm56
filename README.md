@@ -313,7 +313,12 @@ não é da área entender o problema e mexer no simulador.
 O GitHub Actions ([.github/workflows/pages.yml](.github/workflows/pages.yml)) roda esse teste e
 publica a pasta `site/` no GitHub Pages a cada push.
 
-A arte (motor, aviões, termômetro, ícones) é desenhada em SVG no próprio código
+**Português e inglês:** o botão PT | EN no canto superior direito troca o idioma do site inteiro.
+O português fica no HTML e o inglês em [site/i18n.js](site/i18n.js). Os textos montados pelo
+JavaScript usam `tr("português", "English")`, com as duas versões lado a lado. Dá para mandar o link
+direto em inglês: [?lang=en](https://asafeferreira.github.io/planejador-revisao-cfm56/?lang=en).
+
+A arte (motor, aviões, mostrador, ícones) é desenhada em SVG no próprio código
 ([site/arte.js](site/arte.js)). Os gráficos usam Chart.js.
 
 ## Fontes
