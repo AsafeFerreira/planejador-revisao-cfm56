@@ -1,0 +1,33 @@
+# Publica a pasta site/ no GitHub Pages a cada push na main/master.
+# Antes de publicar, confere que o simulador em JavaScript dá o mesmo resultado do Python.
+# Ativar uma vez no GitHub: Settings → Pages → Source: "GitHub Actions".
+name: Publicar site no GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Testar simulador (JavaScript igual ao Python)
+        run: node site/teste_simulador.mjs
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4

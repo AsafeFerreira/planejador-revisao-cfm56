@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Planejador de Revisão CFM56</title>
+  <meta name="description" content="Quando um motor de avião precisa ir para a oficina? Simulador interativo de revisões do motor CFM56-7B, com dados públicos e uma frota fictícia.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="estilo.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <nav class="nav">
+    <a class="marca" href="#">CFM56<span>·</span>Planejador</a>
+    <div class="nav-links">
+      <a href="#motor">O motor</a>
+      <a href="#folga">A folga</a>
+      <a href="#simulador">Simulador</a>
+      <a href="#pecas">Trocar cedo?</a>
+      <a href="#como">Como foi feito</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-texto">
+      <p class="selo">Projeto de estudo · dados públicos · frota fictícia</p>
+      <h1>Quando um motor de avião precisa ir para a <em>oficina</em>?</h1>
+      <p class="lead">
+        Um motor de avião não quebra de repente: ele vai perdendo folga aos poucos, a cada decolagem.
+        Este site mostra como prever <strong>quando</strong> cada motor de uma frota vai precisar de revisão,
+        e como uma oficina se planeja para receber todos eles.
+      </p>
+      <div class="acoes">
+        <a class="botao primario" href="#motor">Entender em 3 minutos</a>
+        <a class="botao" href="#simulador">Ir direto ao simulador</a>
+      </div>
+    </div>
+    <div class="hero-arte" id="arte-hero"></div>
+    <div class="hero-fatos">
+      <div><b>CFM56-7B</b><span>o motor do Boeing 737 NG</span></div>
+      <div><b>100 motores</b><span>numa frota inventada</span></div>
+      <div><b>10 anos</b><span>de futuro simulado, mês a mês</span></div>
+    </div>
+  </section>
+</header>
+
+<main>
+
+<!-- ======================================================= 1. O MOTOR -->
+<section id="motor" class="secao">
+  <div class="cabecalho" data-num="01">
+    <p class="sobretitulo">Capítulo 1</p>
+    <h2>O motor em 4 passos</h2>
+    <p class="intro">Toque nos números do desenho. Todo motor a jato faz a mesma coisa:
+      <strong>aspira, comprime, queima e expande</strong>.</p>
+  </div>
+  <div class="motor-explica">
+    <div class="motor-desenho">
+      <div id="arte-passos"></div>
+      <div class="fichas">
+        <div><b>1,55 m</b><span>diâmetro do fan</span></div>
+        <div><b>≈ 5 : 1</b><span>ar por fora × por dentro</span></div>
+        <div><b>19,5 a 27,3 mil</b><span>libras de empuxo</span></div>
+        <div><b>15.183 rpm</b><span>giro máx. do eixo de alta</span></div>
+      </div>
+    </div>
+    <ol class="passos" id="passos">
+      <li data-passo="1"><span class="num">1</span><div><h3>Aspira</h3>
+        <p>O <b>fan</b>, aquela hélice grande na frente, puxa uma quantidade enorme de ar. Cerca de
+        <b>5 partes de cada 6</b> passam por fora do miolo do motor (o "bypass") e saem atrás, empurrando o avião.
+        É daí que vem a maior parte da força, e também o motor ser econômico e mais silencioso.</p></div></li>
+      <li data-passo="2"><span class="num">2</span><div><h3>Comprime</h3>
+        <p>O ar que entra no miolo passa por <b>12 fileiras de palhetas</b> que o espremem até ficar
+        <b>de 21 a 29 vezes</b> mais apertado, conforme a versão. Ar comprimido queima melhor, como numa panela de pressão.</p></div></li>
+      <li data-passo="3"><span class="num">3</span><div><h3>Queima</h3>
+        <p>Na <b>câmara de combustão</b>, o querosene é queimado nesse ar. O gás passa de
+        <b>1.100 °C</b>. As peças logo depois da câmara só aguentam porque têm revestimentos
+        cerâmicos e são resfriadas por dentro com ar.</p></div></li>
+      <li data-passo="4"><span class="num">4</span><div><h3>Expande</h3>
+        <p>O gás quente gira as <b>turbinas</b>, que movem o compressor e o fan por eixos. Dentro da turbina,
+        um sensor mede a temperatura do gás: a <b>EGT</b>. Ela é o "termômetro da saúde" do motor.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ======================================================= 2. A FOLGA -->
+<section id="folga" class="secao secao-alt">
+  <div class="cabecalho" data-num="02">
+    <p class="sobretitulo">Capítulo 2</p>
+    <h2>A folga de temperatura</h2>
+    <p class="intro">Todo motor tem uma <b>temperatura máxima</b> que não pode passar. Um motor novo trabalha bem abaixo dela.
+      Essa distância é a <b>margem de EGT</b>, a "folga". Com o desgaste, o motor precisa trabalhar mais quente
+      para dar a mesma força, e a folga diminui a cada voo.</p>
+  </div>
+
+  <div class="folga-grid">
+    <div class="cartao folga-controles">
+      <p class="analogia">💡 <b>Pense num atleta:</b> com os anos, para correr no mesmo ritmo, o coração precisa bater
+        mais rápido. Quando chega no máximo, é hora de cuidar dele. No motor, o "coração acelerado" é a temperatura.</p>
+
+      <label class="rotulo">Versão do motor <small>quanto mais força, menos folga desde novo</small></label>
+      <div class="segmentado" id="folga-versao" role="group" aria-label="Versão do motor">
+        <button data-v="0" aria-pressed="true">7B24 <small>24 mil lbf</small></button>
+        <button data-v="1" aria-pressed="false">7B26 <small>26 mil lbf</small></button>
+        <button data-v="2" aria-pressed="false">7B27 <small>27 mil lbf</small></button>
+      </div>
+
+      <label class="rotulo" for="folga-ciclos">Decolagens desde novo (ciclos):
+        <output id="folga-ciclos-txt">0</output></label>
+      <input type="range" id="folga-ciclos" min="0" max="20000" step="100" value="8000">
+      <div class="regua"><span>novo</span><span>5 mil</span><span>10 mil</span><span>15 mil</span><span>20 mil</span></div>
+
+      <div class="folga-leitura" id="folga-leitura"></div>
+      <ul class="faixas">
+        <li><span class="ponto-status" style="background:#0ca30c"></span><span><b>Folga boa</b> · mais de 30 °C</span><em>Voa normalmente; a companhia só acompanha a tendência.</em></li>
+        <li><span class="ponto-status" style="background:#fab219"></span><span><b>Atenção</b> · 10 a 30 °C</span><em>O planejamento já reserva uma vaga na oficina.</em></li>
+        <li><span class="ponto-status" style="background:#d03b3b"></span><span><b>Perto do limite</b> · menos de 10 °C</span><em>O motor sai da asa na próxima oportunidade.</em></li>
+      </ul>
+    </div>
+    <div class="cabine">
+      <div class="cabine-topo"><span class="led" id="cabine-led"></span>Painel do motor
+        <span class="cabine-versao" id="cabine-versao">CFM56-7B24</span></div>
+      <div id="folga-mostrador"></div>
+      <div class="cabine-folga" id="cabine-folga"></div>
+      <div class="cabine-curva">
+        <p>A folga ao longo da vida do motor <span>● você está aqui</span></p>
+        <div id="folga-curva"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= 3. DOIS RELÓGIOS -->
+<section class="secao">
+  <div class="cabecalho" data-num="03">
+    <p class="sobretitulo">Capítulo 3</p>
+    <h2>Dois relógios tiram o motor da asa</h2>
+    <p class="intro">O motor vai para a oficina pelo relógio que zerar <b>primeiro</b>.</p>
+  </div>
+  <div class="relogios">
+    <article class="cartao relogio">
+      <div class="relogio-icone quente" data-icone="termometro"></div>
+      <h3>Relógio 1: a folga de temperatura</h3>
+      <p>Cai um pouco a cada decolagem: rápido nos primeiros ~1.000 voos (as peças "assentam") e devagar depois
+        (erosão por poeira e areia). Quando a folga acaba, o motor não consegue mais decolar com força total
+        num dia quente sem passar do limite.</p>
+      <p class="fonte">Ritmo publicado: 11–15 °C nos primeiros 1.000 ciclos e 4–6 °C a cada 1.000 depois.</p>
+    </article>
+    <article class="cartao relogio">
+      <div class="relogio-icone frio" data-icone="disco"></div>
+      <h3>Relógio 2: as peças com prazo de validade</h3>
+      <p>Os discos e eixos que giram a até <b>15 mil rotações por minuto</b> sofrem um pouquinho de fadiga a cada
+        decolagem. Por segurança, cada um tem uma <b>vida máxima</b>, contada em ciclos, e tem que ser trocado
+        quando chega nela, mesmo que pareça perfeito. São as <b>LLPs</b> (<i>life limited parts</i>).</p>
+      <div class="barras-llp">
+        <div><span>Núcleo (compressor e turbina de alta)</span><i style="--w:66.6%"></i><b>20 mil</b></div>
+        <div><span>Turbina de baixa</span><i style="--w:83.3%"></i><b>25 mil</b></div>
+        <div><span>Fan e booster</span><i style="--w:100%"></i><b>30 mil</b></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="cartao corrida">
+    <div class="cartao-topo">
+      <div>
+        <h3>Quem zera primeiro?</h3>
+        <p class="sub">Quantos ciclos cada relógio aguenta num motor novo, com desgaste no ritmo médio.</p>
+      </div>
+      <div class="segmentado" id="corrida-versao" role="group" aria-label="Versão do motor">
+        <button data-v="0" aria-pressed="true">7B24</button><button data-v="1" aria-pressed="false">7B26</button>
+        <button data-v="2" aria-pressed="false">7B27</button>
+      </div>
+    </div>
+    <div class="corrida-linhas" id="corrida"></div>
+    <p class="corrida-conclusao" id="corrida-conclusao"></p>
+  </div>
+</section>
+
+<!-- ======================================================= 4. SIMULADOR -->
+<section id="simulador" class="secao secao-escura">
+  <div class="cabecalho" data-num="04">
+    <p class="sobretitulo">Capítulo 4 · Interativo</p>
+    <h2>Você é o planejador da oficina</h2>
+    <p class="intro">Uma companhia aérea <b>inventada</b> tem 50 aviões 737 (100 motores). Mexa nas opções e veja,
+      nos próximos 10 anos, quantos motores chegam na oficina, quanto tempo esperam e quantos motores reserva
+      a companhia precisa ter para os aviões não ficarem parados.</p>
+  </div>
+
+  <div class="simulador">
+    <aside class="painel-controles">
+      <div class="controle">
+        <label class="rotulo">Motores que a oficina recebe por mês
+          <small>Mais vagas custam mais (gente, bancada, ferramentas).</small></label>
+        <div class="segmentado" data-controle="capacidade">
+          <button data-valor="1">1</button><button data-valor="2" aria-pressed="true">2</button>
+          <button data-valor="3">3</button><button data-valor="4">4</button>
+        </div>
+      </div>
+      <div class="controle">
+        <label class="rotulo">Ritmo de desgaste
+          <small>Calor, poeira e voos curtos gastam o motor mais rápido.</small></label>
+        <div class="segmentado" data-controle="ritmo">
+          <button data-valor="lento">Mais lento</button><button data-valor="normal" aria-pressed="true">Normal</button>
+          <button data-valor="rapido">Mais rápido</button>
+        </div>
+      </div>
+      <div class="controle">
+        <label class="rotulo">Peças com validade, na revisão
+          <small>Trocar logo, ou aproveitar até o fim? (veja o capítulo 5)</small></label>
+        <div class="segmentado" data-controle="politica">
+          <button data-valor="casada" aria-pressed="true">Trocar cedo</button>
+          <button data-valor="stub_minimo">Aproveitar até o fim</button>
+        </div>
+      </div>
+      <div class="controle">
+        <label class="rotulo">Meses do motor dentro da oficina
+          <small>Desmontar, inspecionar, consertar e testar.</small></label>
+        <div class="segmentado" data-controle="tat">
+          <button data-valor="1">1</button><button data-valor="2" aria-pressed="true">2</button>
+          <button data-valor="3">3</button><button data-valor="4">4</button>
+        </div>
+      </div>
+      <button class="botao fantasma" id="restaurar">Voltar ao padrão</button>
+      <p class="nota-controles">Cada mudança refaz <b>200 futuros possíveis</b> (método de Monte Carlo), porque
+        ninguém sabe exatamente o ritmo de desgaste de cada motor.</p>
+    </aside>
+
+    <div class="resultados">
+      <div class="kpis" id="kpis" aria-live="polite"></div>
+
+      <div class="cartao escuro">
+        <div class="cartao-topo">
+          <div>
+            <h3>A frota mês a mês</h3>
+            <p class="sub">Cada avião tem 2 motores. Passe o mouse (ou toque) num motor para ver os detalhes.</p>
+          </div>
+          <div class="tempo">
+            <button class="play" id="play" aria-label="Reproduzir">▶</button>
+            <input type="range" id="mes" min="0" max="119" value="0" aria-label="Mês">
+            <output id="mes-txt">jan/2027</output>
+          </div>
+        </div>
+        <div class="legenda-frota" id="legenda-frota"></div>
+        <div class="frota" id="frota"></div>
+        <div class="contadores" id="contadores"></div>
+      </div>
+
+      <div class="cartao escuro">
+        <h3>Quantos motores chegam na oficina</h3>
+        <p class="sub">Média dos 200 futuros, por trimestre. A linha tracejada é quanto a oficina consegue receber.</p>
+        <div class="grafico"><canvas id="g-demanda" aria-label="Gráfico de motores removidos por trimestre, por motivo"></canvas></div>
+      </div>
+
+      <div class="cartao escuro">
+        <h3>Motores reserva necessários</h3>
+        <p class="sub">Motores fora da asa (na fila ou na oficina). A linha é o caso típico; a faixa vai do futuro
+          mais tranquilo ao mais apertado (9 em cada 10 futuros ficam dentro dela).</p>
+        <div class="grafico"><canvas id="g-reservas" aria-label="Gráfico de motores fora da asa ao longo do tempo"></canvas></div>
+      </div>
+
+      <div class="cartao escuro">
+        <h3>Fila de entrada na oficina</h3>
+        <p class="sub">Próximos 12 motores, no cenário médio, com as opções escolhidas.</p>
+        <div class="tabela-rolagem"><table class="tabela" id="fila"></table></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= 5. TROCAR CEDO? -->
+<section id="pecas" class="secao">
+  <div class="cabecalho" data-num="05">
+    <p class="sobretitulo">Capítulo 5</p>
+    <h2>Trocar a peça cedo ou aproveitar até o fim?</h2>
+    <p class="intro">Com o motor aberto na oficina, uma peça ainda tem, digamos, 7 mil voos de vida, mas o motor vai
+      voltar a voar uns 13 mil. Trocar agora joga fora vida boa. Não trocar obriga a tirar o motor da asa de novo,
+      no meio do caminho, só por causa dela.</p>
+  </div>
+  <div class="cartao dilema">
+    <h3>O dilema numa figura</h3>
+    <p class="sub">O motor acabou de sair da revisão. Uma peça do núcleo (vida de 20 mil ciclos) já voou 13 mil, então sobram 7 mil.
+      A folga de temperatura restaurada dá para voar mais uns 13 mil.</p>
+    <div class="dilema-linhas">
+      <div class="dilema-rotulo"><b>Peça velha</b><span>quanto ainda aguenta</span></div>
+      <div class="dilema-trilho">
+        <i class="sobra" style="--de:0%;--ate:35%">sobram 7 mil</i>
+      </div>
+      <div class="dilema-rotulo"><b>Folga do motor</b><span>quanto o motor aguenta</span></div>
+      <div class="dilema-trilho">
+        <i class="usado" style="--de:0%;--ate:65%">dá para voar mais 13 mil</i>
+      </div>
+      <div class="dilema-rotulo"><b>Trocar cedo</b><span>peça nova agora</span></div>
+      <div class="dilema-trilho">
+        <i class="voa" style="--de:0%;--ate:65%">motor voa 13 mil ciclos, até a folga acabar</i>
+        <em class="selo-custo laranja" style="--x:66%">7 mil ciclos de peça no lixo ≈ US$ 0,46 mi</em>
+      </div>
+      <div class="dilema-rotulo"><b>Aproveitar até o fim</b><span>peça velha continua</span></div>
+      <div class="dilema-trilho">
+        <i class="voa" style="--de:0%;--ate:35%">voa 7 mil</i>
+        <span class="parada" style="--x:35%" title="Parada extra na oficina">🔧</span>
+        <i class="voa claro" style="--de:36%;--ate:65%">volta e voa mais 6 mil</i>
+        <em class="selo-custo azul" style="--x:66%">1 revisão extra ≈ US$ 1,7 mi</em>
+      </div>
+      <div></div>
+      <div class="dilema-eixo"><span>revisão</span><span>5 mil</span><span>10 mil</span><span>15 mil</span><span>20 mil ciclos depois</span></div>
+    </div>
+  </div>
+
+  <div class="pecas-grid">
+    <div class="cartao">
+      <p class="analogia">🚗 <b>É como a correia dentada do carro:</b> se o mecânico já abriu o motor para outro serviço
+        e a correia está perto do fim, vale trocar junto, porque abrir de novo só para ela custa mais caro que a vida
+        que sobrava.</p>
+      <label class="rotulo" for="custo">Quanto custa uma revisão (sem as peças):
+        <output id="custo-txt">US$ 1,7 milhão</output></label>
+      <input type="range" id="custo" min="0.6" max="2.6" step="0.05" value="1.725">
+      <div class="regua"><span>US$ 0,6 mi</span><span>fonte: 1,6–1,85</span><span>US$ 2,6 mi</span></div>
+      <div class="veredito" id="veredito"></div>
+    </div>
+    <div class="cartao">
+      <h3>Custo em 10 anos</h3>
+      <p class="sub">Revisões + vida de peça jogada fora. Média de 200 futuros, sem limite de vagas, com o ritmo de desgaste escolhido no simulador.</p>
+      <div class="grafico baixo"><canvas id="g-politicas" aria-label="Comparação de custo entre as duas políticas"></canvas></div>
+      <div class="politica-numeros" id="politica-numeros"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= 6. COMO FOI FEITO -->
+<section id="como" class="secao secao-alt">
+  <div class="cabecalho" data-num="06">
+    <p class="sobretitulo">Bastidores</p>
+    <h2>Como foi feito</h2>
+    <p class="intro">Tudo em Python, com dados públicos. Cada etapa foi conferida com números publicados por oficinas
+      e companhias aéreas antes de passar para a próxima.</p>
+  </div>
+  <ol class="linha-etapas">
+    <li><b>1 · Dados públicos</b><p>Consumo de combustível e empuxo de 33 versões do CFM56-7B, do banco de emissões da ICAO.</p></li>
+    <li><b>2 · Modelo físico</b><p>Simulação termodinâmica do motor (fan, compressores, câmara, turbinas). Calibrado em uma
+      versão, previu a folga das outras cinco com erro médio de 10 °C.</p></li>
+    <li><b>3 · Desgaste</b><p>Quanto a temperatura sobe quando cada peça perde eficiência e quantos ciclos o motor aguenta.
+      Bate com os intervalos relatados pela TAP M&amp;E.</p></li>
+    <li><b>4 · Frota e oficina</b><p>Simulação mês a mês de 100 motores com os dois relógios, Monte Carlo e comparação de políticas.</p></li>
+    <li><b>5 · Este site</b><p>O simulador foi traduzido para JavaScript e roda no seu navegador. Um teste automático confere
+      que ele dá exatamente o mesmo resultado do Python.</p></li>
+  </ol>
+
+  <div class="como-grid">
+    <div class="cartao">
+      <h3>O modelo físico acerta a folga de cada versão?</h3>
+      <p class="sub">Barra = faixa publicada por oficinas. Ponto = previsão do modelo (calibrado só no 7B24).</p>
+      <div class="grafico"><canvas id="g-validacao" aria-label="Margem prevista contra faixa publicada por versão"></canvas></div>
+    </div>
+    <div class="cartao">
+      <h3>O que este projeto <u>não</u> é</h3>
+      <ul class="limites">
+        <li><b>Não usa dados da GE, da CFM ou de nenhuma oficina.</b> Só fontes públicas: ICAO/EASA, ficha de certificação
+          da autoridade britânica (CAA) e revistas técnicas (Aircraft Commerce nº 39, 58 e 87).</li>
+        <li><b>A frota é inventada.</b> Aviões, motores e datas não existem.</li>
+        <li>Toda revisão tem o mesmo custo; as 18 peças com validade foram agrupadas em 3 módulos.</li>
+        <li>O tempo de oficina e as vagas por mês são hipóteses; não há falhas inesperadas (como pássaros).</li>
+        <li>Preços de lista de 2013: servem para comparar escolhas, não como valor atual.</li>
+      </ul>
+    </div>
+  </div>
+
+  <details class="glossario cartao">
+    <summary><h3>Glossário</h3></summary>
+    <dl>
+      <dt>EGT</dt><dd>Temperatura do gás de escape (<i>exhaust gas temperature</i>), medida dentro da turbina de baixa pressão.</dd>
+      <dt>Margem de EGT (folga)</dt><dd>Quanto falta para a EGT chegar no limite numa decolagem em dia quente.</dd>
+      <dt>Ciclo (EFC)</dt><dd>Um voo completo: liga, decola, pousa, desliga. O desgaste se conta em ciclos.</dd>
+      <dt>LLP</dt><dd>Peça com vida limitada: disco ou eixo que precisa ser trocado ao atingir um número de ciclos.</dd>
+      <dt>Revisão (shop visit)</dt><dd>Quando o motor sai do avião e vai para a oficina ser desmontado e restaurado.</dd>
+      <dt>Motor reserva</dt><dd>Motor extra que a companhia instala no avião enquanto o original está na oficina.</dd>
+      <dt>Monte Carlo</dt><dd>Rodar a simulação muitas vezes, cada uma com um sorteio diferente, para ver a faixa de resultados possíveis.</dd>
+      <dt>Bypass</dt><dd>O ar que o fan empurra por fora do miolo do motor. No CFM56-7B, cerca de 5 vezes o ar que passa por dentro.</dd>
+    </dl>
+  </details>
+</section>
+
+</main>
+
+<footer class="rodape">
+  <div>
+    <p class="marca">CFM56<span>·</span>Planejador</p>
+    <p>Projeto de estudo de Asafe Ferreira, Engenharia de Computação.<br>
+      Dados públicos · frota fictícia · nenhum dado da GE, CFM ou Celma.</p>
+  </div>
+  <a class="botao" href="https://github.com/AsafeFerreira/planejador-revisao-cfm56">Código no GitHub</a>
+</footer>
+
+<div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+</body>
+</html>
