@@ -271,7 +271,7 @@ entra na comparação.
 **Limitações:**
 
 - Toda revisão é tratada como uma restauração de desempenho do núcleo, com o mesmo custo. Uma
-  visita só para trocar a LPT custa menos, e isso favorece a política casada.
+  visita só para trocar a LPT custa menos, e isso favorece o stub mínimo.
 - As LLPs foram agrupadas por módulo. Na prática, são 18 peças, cada uma com a sua vida.
 - O tempo de oficina (2 meses) e a capacidade são hipóteses.
 - Não há remoções não programadas (pássaros, falhas) nem efeito de derate e de clima quente no
